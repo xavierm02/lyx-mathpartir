@@ -731,6 +731,7 @@ gather{displaymath}
 gather*{displaymath}
 multline{displaymath}
 multline*{displaymath}
+mathpar{displaymath}
 math{}
 displaymath{displaymath}
 flalign{displaymath}

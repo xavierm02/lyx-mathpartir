@@ -49,6 +49,7 @@ void LaTeXHighlighter::highlightBlock(QString const & text)
 		"\\\\begin\\{flalign\\**\\}|"
 		"\\\\begin\\{gather\\**\\}|"
 		"\\\\begin\\{multline\\**\\}|"
+		"\\\\begin\\{mathpar\\**\\}|"
 		"\\\\begin\\{array\\**\\}|"
 		"\\\\begin\\{cases\\**\\}"
 		")");
@@ -59,6 +60,7 @@ void LaTeXHighlighter::highlightBlock(QString const & text)
 		"\\\\end\\{flalign\\**\\}|"
 		"\\\\end\\{gather\\**\\}|"
 		"\\\\end\\{multline\\**\\}|"
+		"\\\\end\\{mathpar\\**\\}|"
 		"\\\\end\\{array\\**\\}|"
 		"\\\\end\\{cases\\**\\}"
 		")");

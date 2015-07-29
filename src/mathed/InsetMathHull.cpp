@@ -124,6 +124,7 @@ HullType hullType(docstring const & s)
 	if (s == "xalignat")  return hullXAlignAt;
 	if (s == "xxalignat") return hullXXAlignAt;
 	if (s == "multline")  return hullMultline;
+	if (s == "mathpar")  return hullMathpar;
 	if (s == "gather")    return hullGather;
 	if (s == "flalign")   return hullFlAlign;
 	if (s == "regexp")    return hullRegexp;
@@ -144,6 +145,7 @@ docstring hullName(HullType type)
 		case hullXAlignAt:   return from_ascii("xalignat");
 		case hullXXAlignAt:  return from_ascii("xxalignat");
 		case hullMultline:   return from_ascii("multline");
+		case hullMathpar:   return from_ascii("mathpar");
 		case hullGather:     return from_ascii("gather");
 		case hullFlAlign:    return from_ascii("flalign");
 		case hullRegexp:     return from_ascii("regexp");
@@ -352,7 +354,7 @@ char InsetMathHull::defaultColAlign(col_type col)
 {
 	if (type_ == hullEqnArray)
 		return "rcl"[col];
-	if (type_ == hullMultline)
+	if (type_ == hullMultline || type_ == hullMathpar)
 		return 'c';
 	if (type_ == hullGather)
 		return 'c';
@@ -364,7 +366,7 @@ char InsetMathHull::defaultColAlign(col_type col)
 
 char InsetMathHull::displayColAlign(idx_type idx) const
 {
-	if (type_ == hullMultline) {
+	if (type_ == hullMultline || type_ == hullMathpar) {
 		row_type const r = row(idx);
 		if (r == 0)
 			return 'l';
@@ -818,6 +820,7 @@ bool InsetMathHull::ams() const
 		case hullAlign:
 		case hullFlAlign:
 		case hullMultline:
+		case hullMathpar:
 		case hullGather:
 		case hullAlignAt:
 		case hullXAlignAt:
@@ -853,6 +856,8 @@ bool InsetMathHull::numberedType() const
 	if (type_ == hullXXAlignAt)
 		return false;
 	if (type_ == hullRegexp)
+		return false;
+	if (type_ == hullMathpar)
 		return false;
 	for (row_type row = 0; row < nrows(); ++row)
 		if (numbered(row))
@@ -928,6 +933,10 @@ void InsetMathHull::header_write(WriteStream & os) const
 		os << "\n\\begin{" << hullName(type_) << star(n) << "}\n";
 		break;
 
+	case hullMathpar:
+		os << "\n\\begin{" << hullName(type_) << "}\n";
+		break;
+
 	case hullAlignAt:
 	case hullXAlignAt:
 		os << "\n\\begin{" << hullName(type_) << star(n) << '}'
@@ -980,6 +989,10 @@ void InsetMathHull::footer_write(WriteStream & os) const
 		os << "\n\\end{" << hullName(type_) << star(n) << "}\n";
 		break;
 
+	case hullMathpar:
+		os << "\n\\end{" << hullName(type_) << "}\n";
+		break;
+
 	case hullXXAlignAt:
 		os << "\n\\end{" << hullName(type_) << "}\n";
 		break;
@@ -1002,7 +1015,7 @@ bool InsetMathHull::rowChangeOK() const
 		type_ == hullEqnArray || type_ == hullAlign ||
 		type_ == hullFlAlign || type_ == hullAlignAt ||
 		type_ == hullXAlignAt || type_ == hullXXAlignAt ||
-		type_ == hullGather || type_ == hullMultline;
+		type_ == hullGather || type_ == hullMultline || type_ == hullMathpar;
 }
 
 
@@ -1023,7 +1036,7 @@ void InsetMathHull::addRow(row_type row)
 	// Move the number and raw pointer, do not call label() (bug 7511)
 	InsetLabel * label = dummy_pointer;
 	docstring number = empty_docstring();
-	if (type_ == hullMultline) {
+	if (type_ == hullMultline || type_ == hullMathpar) {
 		if (row + 1 == nrows())  {
 			numbered_[row] = NONUMBER;
 			swap(label, label_[row]);
@@ -1056,7 +1069,7 @@ void InsetMathHull::delRow(row_type row)
 {
 	if (nrows() <= 1 || !rowChangeOK())
 		return;
-	if (row + 1 == nrows() && type_ == hullMultline) {
+	if (row + 1 == nrows() && (type_ == hullMultline || type_ == hullMathpar)) {
 		swap(numbered_[row - 1], numbered_[row]);
 		swap(numbers_[row - 1], numbers_[row]);
 		swap(label_[row - 1], label_[row]);
@@ -1244,7 +1257,7 @@ void InsetMathHull::mutate(HullType newtype)
 			// split it "nicely" on the first relop
 			splitTo3Cols();
 			setType(hullEqnArray);
-		} else if (newtype == hullMultline || newtype == hullGather) {
+		} else if (newtype == hullMultline || newtype == hullMathpar || newtype == hullGather) {
 			setType(newtype);
 		} else {
 			// split it "nicely"
@@ -1271,7 +1284,7 @@ void InsetMathHull::mutate(HullType newtype)
 			changeCols(3);
 			setType(hullEqnArray);
 			mutate(newtype);
-		} else if (newtype == hullGather || newtype == hullMultline) {
+		} else if (newtype == hullGather || newtype == hullMultline || newtype == hullMathpar) {
 			changeCols(1);
 			setType(newtype);
 		} else if (newtype ==   hullXXAlignAt) {
@@ -1290,7 +1303,7 @@ void InsetMathHull::mutate(HullType newtype)
 			changeCols(3);
 			setType(hullEqnArray);
 			mutate(newtype);
-		} else if (newtype == hullGather || newtype == hullMultline) {
+		} else if (newtype == hullGather || newtype == hullMultline || newtype == hullMathpar) {
 			changeCols(1);
 			setType(newtype);
 		} else {
@@ -1298,8 +1311,8 @@ void InsetMathHull::mutate(HullType newtype)
 		}
 	}
 
-	else if (type_ == hullMultline || type_ == hullGather) {
-		if (newtype == hullGather || newtype == hullMultline)
+	else if (type_ == hullMultline || type_ == hullMathpar || type_ == hullGather) {
+		if (newtype == hullGather || newtype == hullMultline || newtype == hullMathpar)
 			setType(newtype);
 		else if (newtype == hullAlign || newtype == hullFlAlign  ||
 			 newtype == hullAlignAt || newtype == hullXAlignAt) {
@@ -1336,7 +1349,7 @@ docstring InsetMathHull::eolString(row_type row, bool fragile, bool latex,
 				      : label_[row]->getParam("name");
 			res += "\\label{" + name + '}';
 		}
-		if (type_ != hullMultline) {
+		if (type_ != hullMultline && type_ != hullMathpar) {
 			if (numbered_[row]  == NONUMBER)
 				res += "\\nonumber ";
 			else if (numbered_[row]  == NOTAG)
@@ -1499,7 +1512,7 @@ void InsetMathHull::doDispatch(Cursor & cur, FuncRequest & cmd)
 		//lyxerr << "toggling all numbers" << endl;
 		cur.recordUndoInset();
 		bool old = numberedType();
-		if (type_ == hullMultline)
+		if (type_ == hullMultline || type_ == hullMathpar)
 			numbered(nrows() - 1, !old);
 		else
 			for (row_type row = 0; row < nrows(); ++row)
@@ -1512,7 +1525,7 @@ void InsetMathHull::doDispatch(Cursor & cur, FuncRequest & cmd)
 
 	case LFUN_MATH_NUMBER_LINE_TOGGLE: {
 		cur.recordUndoInset();
-		row_type r = (type_ == hullMultline) ? nrows() - 1 : cur.row();
+		row_type r = (type_ == hullMultline || type_ == hullMathpar) ? nrows() - 1 : cur.row();
 		bool old = numbered(r);
 		cur.message(old ? _("No number") : _("Number"));
 		numbered(r, !old);
@@ -1521,7 +1534,7 @@ void InsetMathHull::doDispatch(Cursor & cur, FuncRequest & cmd)
 	}
 
 	case LFUN_LABEL_INSERT: {
-		row_type r = (type_ == hullMultline) ? nrows() - 1 : cur.row();
+		row_type r = (type_ == hullMultline || type_ == hullMathpar) ? nrows() - 1 : cur.row();
 		docstring old_label = label(r);
 		docstring const default_label = from_ascii("eq:");
 		if (old_label.empty())
@@ -1545,7 +1558,7 @@ void InsetMathHull::doDispatch(Cursor & cur, FuncRequest & cmd)
 		if (cmd.argument().empty() && &cur.inset() == this)
 			// if there is no argument and we're inside math, we retrieve
 			// the row number from the cursor position.
-			row = (type_ == hullMultline) ? nrows() - 1 : cur.row();
+			row = (type_ == hullMultline || type_ == hullMathpar) ? nrows() - 1 : cur.row();
 		else {
 			// if there is an argument, find the corresponding label, else
 			// check whether there is at least one label.
@@ -1596,7 +1609,7 @@ void InsetMathHull::doDispatch(Cursor & cur, FuncRequest & cmd)
 			InsetCommand::string2params(to_utf8(cmd.argument()), p);
 			docstring str = p["name"];
 			cur.recordUndoInset();
-			row_type const r = (type_ == hullMultline) ? nrows() - 1 : cur.row();
+			row_type const r = (type_ == hullMultline || type_ == hullMathpar) ? nrows() - 1 : cur.row();
 			str = trim(str);
 			if (!str.empty())
 				numbered(r, true);
@@ -1730,10 +1743,10 @@ bool InsetMathHull::getStatus(Cursor & cur, FuncRequest const & cmd,
 	case LFUN_MATH_NUMBER_LINE_TOGGLE: {
 		// FIXME: what is the right test, this or the one of
 		// LABEL_INSERT?
-		bool const enable = (type_ == hullMultline)
+		bool const enable = (type_ == hullMultline || type_ == hullMathpar)
 			? (nrows() - 1 == cur.row())
 			: display() != Inline;
-		row_type const r = (type_ == hullMultline) ? nrows() - 1 : cur.row();
+		row_type const r = (type_ == hullMultline || type_ == hullMathpar) ? nrows() - 1 : cur.row();
 		status.setEnabled(enable);
 		status.setOnOff(enable && numbered(r));
 		return true;
@@ -1749,7 +1762,7 @@ bool InsetMathHull::getStatus(Cursor & cur, FuncRequest const & cmd,
 		if (cmd.argument().empty() && &cur.inset() == this) {
 			// if there is no argument and we're inside math, we retrieve
 			// the row number from the cursor position.
-			row = (type_ == hullMultline) ? nrows() - 1 : cur.row();
+			row = (type_ == hullMultline || type_ == hullMathpar) ? nrows() - 1 : cur.row();
 			enabled = numberedType() && label_[row] && numbered(row);
 		} else {
 			// if there is an argument, find the corresponding label, else

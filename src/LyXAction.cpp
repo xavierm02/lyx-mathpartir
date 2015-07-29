@@ -1733,7 +1733,7 @@ void LyXAction::init()
  * \li Action: Mutates the type of math inset to the newly selected one.
  * \li Syntax: math-mutate <TYPE>
  * \li Params: <TYPE>: none|simple|equation|eqnarray|align|alignat|xalignat|xxalignat|
-                       multline|gather|flalign
+                       multline|mathpar|gather|flalign
  * \li Origin: Andre, 23 May 2001
  * \endvar
  */

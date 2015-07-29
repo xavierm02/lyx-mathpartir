@@ -1723,6 +1723,15 @@ bool Parser::parse1(InsetMathGrid & grid, unsigned flags,
 				parse2(cell->back(), FLAG_END, InsetMath::MATH_MODE, !stared(name));
 			}
 
+			else if (name == "mathpar") {
+				if (mode != InsetMath::UNDECIDED_MODE) {
+					error("bad math environment " + name);
+					break;
+				}
+				cell->push_back(MathAtom(new InsetMathHull(buf, hullMathpar)));
+				parse2(cell->back(), FLAG_END, InsetMath::MATH_MODE, !stared(name));
+			}
+
 			else if (name == "gather" || name == "gather*") {
 				if (mode != InsetMath::UNDECIDED_MODE) {
 					error("bad math environment " + name);

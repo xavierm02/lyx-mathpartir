@@ -319,6 +319,7 @@ Menuset
 		Item "AMS flalign Environment|f" "math-mutate flalign"
 		Item "AMS gather Environment|g" "math-mutate gather"
 		Item "AMS multline Environment|m" "math-mutate multline"
+		Item "mathpar Environment|p" "math-mutate mathpar"
 	End
 
 #
@@ -438,6 +439,7 @@ Menuset
 		Item "AMS flalign Environment|f" "command-sequence math-mode on; math-mutate flalign;"
 		Item "AMS gather Environment|g" "command-sequence math-mode on; math-mutate gather;"
 		Item "AMS multline Environment|m" "command-sequence math-mode on; math-mutate multline;"
+		Item "mathpar Environment|p" "command-sequence math-mode on; math-mutate mathpar;"
 		Separator
 # "math-matrix" and "math-insert" create an inline formula first if called from text mode
 		Item "Array Environment|y" "math-matrix 2 2"

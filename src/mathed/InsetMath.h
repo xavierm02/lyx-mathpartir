@@ -31,6 +31,7 @@ enum HullType {
 	hullXXAlignAt,
 	hullFlAlign,
 	hullMultline,
+	hullMathpar,
 	hullGather,
 	hullRegexp
 };

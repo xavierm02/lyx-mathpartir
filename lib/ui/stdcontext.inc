@@ -45,6 +45,7 @@ Menuset
 		Item "AMS flalign Environment|f" "math-mutate flalign"
 		Item "AMS gather Environment|g" "math-mutate gather"
 		Item "AMS multline Environment|m" "math-mutate multline"
+		Item "mathpar Environment|p" "math-mutate mathpar"
 	End
 
 	Menu "context-math"
