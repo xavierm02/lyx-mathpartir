@@ -103,9 +103,7 @@ void InsetMathSplit::write(WriteStream & ws) const
 	docstring suffix;
 	if (!numbered_ && name_ == "align")
 		suffix = from_ascii("*");
-	if (name_ != "lines") {
-		ws << "\\begin{" << name_ << suffix << '}';
-	}
+	ws << "\\begin{" << name_ << suffix << '}';
 	if (name_ != "split" && name_ != "align" && verticalAlignment() != 'c')
 		ws << '[' << verticalAlignment() << ']';
 	if (name_ == "alignedat")
@@ -113,9 +111,7 @@ void InsetMathSplit::write(WriteStream & ws) const
 	InsetMathGrid::write(ws);
 	if (ws.fragile())
 		ws << "\\protect";
-	if (name_ != "lines") {
-		ws << "\\end{" << name_ << suffix << "}\n";
-	}
+	ws << "\\end{" << name_ << suffix << "}\n";
 }
 
 
