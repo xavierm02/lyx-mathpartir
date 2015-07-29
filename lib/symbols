@@ -154,6 +154,7 @@ CD                matrix      none
 # the others (split and alignedat) are hardcoded.
 aligned           split       none
 gathered          split       none
+lines             split       none
 # from Morten H\o gholm's mathtools.sty:
 lgathered         split       none
 rgathered         split       none

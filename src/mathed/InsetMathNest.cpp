@@ -2143,6 +2143,7 @@ MathCompletionList::MathCompletionList(Cursor const & cur)
 	globals.push_back(from_ascii("\\xmapsto"));
 	globals.push_back(from_ascii("\\split"));
 	globals.push_back(from_ascii("\\gathered"));
+	globals.push_back(from_ascii("\\lines"));
 	globals.push_back(from_ascii("\\aligned"));
 	globals.push_back(from_ascii("\\alignedat"));
 	globals.push_back(from_ascii("\\cases"));

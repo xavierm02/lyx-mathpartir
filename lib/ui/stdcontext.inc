@@ -32,6 +32,7 @@ Menuset
 		Item "Aligned Environment|l" "command-sequence math-insert \aligned; inset-modify tabular append-column"
 		Item "AlignedAt Environment|v" "command-sequence math-insert \alignedat; inset-modify tabular append-column"
 		Item "Gathered Environment|h" "math-insert \gathered"
+		Item "Lines Environment" "math-insert \lines"
 		Item "Split Environment|S" "command-sequence math-insert \split; inset-modify tabular append-column"
 		Separator
 		Item "Delimiters...|r" "dialog-show mathdelimiter"

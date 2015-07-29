@@ -52,7 +52,7 @@ char InsetMathSplit::defaultColAlign(col_type col)
 {
 	if (name_ == "split")
 		return 'l';
-	if (name_ == "gathered")
+	if (name_ == "gathered" || name_ == "lines")
 		return 'c';
 	if (name_ == "aligned" || name_ == "align")
 		return (col & 1) ? 'l' : 'r';
@@ -103,7 +103,9 @@ void InsetMathSplit::write(WriteStream & ws) const
 	docstring suffix;
 	if (!numbered_ && name_ == "align")
 		suffix = from_ascii("*");
-	ws << "\\begin{" << name_ << suffix << '}';
+	if (name_ != "lines") {
+		ws << "\\begin{" << name_ << suffix << '}';
+	}
 	if (name_ != "split" && name_ != "align" && verticalAlignment() != 'c')
 		ws << '[' << verticalAlignment() << ']';
 	if (name_ == "alignedat")
@@ -111,7 +113,9 @@ void InsetMathSplit::write(WriteStream & ws) const
 	InsetMathGrid::write(ws);
 	if (ws.fragile())
 		ws << "\\protect";
-	ws << "\\end{" << name_ << suffix << "}\n";
+	if (name_ != "lines") {
+		ws << "\\end{" << name_ << suffix << "}\n";
+	}
 }
 
 
@@ -128,7 +132,7 @@ void InsetMathSplit::infoize(odocstream & os) const
 
 void InsetMathSplit::mathmlize(MathStream & ms) const
 {
-	// split, gathered, aligned, alignedat
+	// split, gathered, lines, aligned, alignedat
 	// At the moment, those seem to display just fine without any
 	// special treatment.
 	// FIXME
@@ -143,7 +147,7 @@ void InsetMathSplit::mathmlize(MathStream & ms) const
 
 void InsetMathSplit::htmlize(HtmlStream & ms) const
 {
-	// split, gathered, aligned, alignedat
+	// split, gathered, lines, aligned, alignedat
 	// At the moment, those seem to display just fine without any
 	// special treatment.
 	// FIXME
@@ -155,7 +159,7 @@ void InsetMathSplit::htmlize(HtmlStream & ms) const
 
 void InsetMathSplit::validate(LaTeXFeatures & features) const
 {
-	if (name_ == "split" || name_ == "gathered" || name_ == "aligned" ||
+	if (name_ == "split" || name_ == "gathered" || name_ == "lines" || name_ == "aligned" ||
 	    name_ == "alignedat" || name_ == "align")
 		features.require("amsmath");
 	else if (name_ == "lgathered" || name_ == "rgathered")
