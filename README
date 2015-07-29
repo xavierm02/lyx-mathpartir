@@ -1,3 +1,12 @@
+This is just Lyx with two extra math environment:
+- mathpar that behaves just like multline but uses mathpath in the .tex instead of multline
+- lines that behaves just like gathered but doesn't actually insert an environment in the .tex
+  (I use it for rules that have several premices since I never found a way to insert \\ in LyX, and inferrule doesn't like containing a gathered environment)
+
+The rest of the file is the README of the original LyX
+
+-----
+
 What is LyX?
 
     LyX is a document processor that encourages an approach to
